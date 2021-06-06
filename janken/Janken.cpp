@@ -12,16 +12,19 @@ Janken::Janken()
 
 bool Janken::update()
 {
-	if (Keyboard::getIns()->getPressingCount(KEY_INPUT_RETURN) == 2) {
+	if (Keyboard::getIns()->getPressingCount(KEY_INPUT_ESCAPE) == 2 && state != 0)
 		initialize();
-	}
+
+	if (state == -1 || player == -1)//まだ未入力か、プレイヤー未入力なら処理する
+		com = GetRand(2);//コンピュータの入力
+
 	inputJanken();
 	return true;
 }
 
 void Janken::draw() const
 {
-	DrawFormatString(150, 0, GetColor(255, 255, 255), "%s", "Enterキーでリセット　1:グー 2:チョキ 3:パー");
+	DrawFormatString(150, 0, GetColor(255, 255, 255), "%s", "Enterキーで決定　Escキーでリセット");
 	if (state == -1)
 		DrawFormatString(150, 50, GetColor(255, 255, 255), "%s", "ジャンケン・・・");
 	else if (state == 0)
@@ -32,12 +35,21 @@ void Janken::draw() const
 		DrawFormatString(150, 50, GetColor(255, 255, 255), "%s", "***おめでとう***");
 
 	DrawFormatString(150, 130, GetColor(255, 255, 255), "%s", "相手：");
-	DrawFormatString(150, 310, GetColor(255, 255, 255), "%s", "自分：");
+	DrawFormatString(150, 410, GetColor(255, 255, 255), "%s", "自分：");
 
 	if (0 <= com && com <= 2)
 		DrawGraph(320, 100, image[com], TRUE);
-	if (0 <= player && player <= 2)
-		DrawGraph(320, 280, image[player], TRUE);
+
+	if ((0 <= player && player <= 2) && state != 0)
+		DrawGraph(200 + 120 * player, 330, image[player], TRUE);
+	else {
+		for (int i = 0; i <= 2; i++) {
+			if (i == select)
+				DrawGraph(200 + 120 * i, 330, image[i], TRUE);
+			else
+				DrawGraph(200 + 120 * i, 380, image[i], TRUE);
+		}
+	}
 }
 
 void Janken::initialize()
@@ -45,14 +57,16 @@ void Janken::initialize()
 	player = -1;
 	com = -1;
 	state = -1;
+	select = 0;
 }
+
 
 void Janken::inputJanken()
 {
 	if (!(state == -1 || state == 0))//まだ未入力か、あいこじゃないなら処理しない
 		return;
 	//何か入力があれば
-	if (Keyboard::getIns()->getPressingCount(KEY_INPUT_1) == 2 || 
+	/*if (Keyboard::getIns()->getPressingCount(KEY_INPUT_1) == 2 || 
 		Keyboard::getIns()->getPressingCount(KEY_INPUT_2) == 2 || 
 		Keyboard::getIns()->getPressingCount(KEY_INPUT_3) == 2) {
 		if (Keyboard::getIns()->getPressingCount(KEY_INPUT_1) == 2)//グーなら
@@ -61,22 +75,34 @@ void Janken::inputJanken()
 			player = 1;
 		if (Keyboard::getIns()->getPressingCount(KEY_INPUT_3) == 2)//パーなら
 			player = 2;
-		com = GetRand(2);//コンピュータの入力
-		calcJanken();
+	}*/
+	if (Keyboard::getIns()->getPressingCount(KEY_INPUT_RIGHT) == 2 ||
+		Keyboard::getIns()->getPressingCount(KEY_INPUT_LEFT) == 2 ||
+		Keyboard::getIns()->getPressingCount(KEY_INPUT_RETURN) == 2) {
+		if (Keyboard::getIns()->getPressingCount(KEY_INPUT_RIGHT) == 2) {
+			select = (select + 1) % 3;
+			player = -1;
+		}
+		if (Keyboard::getIns()->getPressingCount(KEY_INPUT_LEFT) == 2) {
+			select = (select + 2) % 3;
+			player = -1;
+		}
+		if (Keyboard::getIns()->getPressingCount(KEY_INPUT_RETURN) == 2) {
+			player = select;
+			//com = GetRand(2);//コンピュータの入力
+			calcJanken();
+		}
 	}
 }
 
 void Janken::calcJanken()
 {
 	if (player != com) {
-		if (player == (com + 1) % 3) {
+		if (player == (com + 1) % 3)
 			state = 1;//負け状態
-		}
-		else {
+		else
 			state = 2;//勝ち状態
-		}
 	}
-	else {
+	else
 		state = 0;//あいこ状態
-	}
 }

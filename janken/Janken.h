@@ -13,6 +13,6 @@ private:
 	void initialize();
 	void inputJanken();
 	void calcJanken();
-	int player, com, state;
+	int player, com, state, select;
 	int image[3];
 };
