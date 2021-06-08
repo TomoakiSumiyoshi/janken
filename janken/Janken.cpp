@@ -12,11 +12,8 @@ Janken::Janken()
 
 bool Janken::update()
 {
-	if (Keyboard::getIns()->getPressingCount(KEY_INPUT_ESCAPE) == 2 && state != 0)
+	if (Keyboard::getIns()->getPressingCount(KEY_INPUT_ESCAPE) == 2)
 		initialize();
-
-	if (state == -1 || player == -1)//まだ未入力か、プレイヤー未入力なら処理する
-		com = GetRand(2);//コンピュータの入力
 
 	inputJanken();
 	return true;
@@ -35,19 +32,21 @@ void Janken::draw() const
 		DrawFormatString(150, 50, GetColor(255, 255, 255), "%s", "***おめでとう***");
 
 	DrawFormatString(150, 130, GetColor(255, 255, 255), "%s", "相手：");
-	DrawFormatString(150, 410, GetColor(255, 255, 255), "%s", "自分：");
+	DrawFormatString(150, 360, GetColor(255, 255, 255), "%s", "自分：");
 
 	if (0 <= com && com <= 2)
 		DrawGraph(320, 100, image[com], TRUE);
+	else
+		DrawGraph(320, 100, image[GetRand(2)], TRUE);
 
 	if ((0 <= player && player <= 2) && state != 0)
-		DrawGraph(200 + 120 * player, 330, image[player], TRUE);
+		DrawGraph(200 + 120 * player, 280, image[player], TRUE);
 	else {
 		for (int i = 0; i <= 2; i++) {
 			if (i == select)
-				DrawGraph(200 + 120 * i, 330, image[i], TRUE);
+				DrawGraph(200 + 120 * i, 280, image[i], TRUE);
 			else
-				DrawGraph(200 + 120 * i, 380, image[i], TRUE);
+				DrawGraph(200 + 120 * i, 330, image[i], TRUE);
 		}
 	}
 }
@@ -66,30 +65,18 @@ void Janken::inputJanken()
 	if (!(state == -1 || state == 0))//まだ未入力か、あいこじゃないなら処理しない
 		return;
 	//何か入力があれば
-	/*if (Keyboard::getIns()->getPressingCount(KEY_INPUT_1) == 2 || 
-		Keyboard::getIns()->getPressingCount(KEY_INPUT_2) == 2 || 
-		Keyboard::getIns()->getPressingCount(KEY_INPUT_3) == 2) {
-		if (Keyboard::getIns()->getPressingCount(KEY_INPUT_1) == 2)//グーなら
-			player = 0;
-		if (Keyboard::getIns()->getPressingCount(KEY_INPUT_2) == 2)//チョキなら
-			player = 1;
-		if (Keyboard::getIns()->getPressingCount(KEY_INPUT_3) == 2)//パーなら
-			player = 2;
-	}*/
 	if (Keyboard::getIns()->getPressingCount(KEY_INPUT_RIGHT) == 2 ||
 		Keyboard::getIns()->getPressingCount(KEY_INPUT_LEFT) == 2 ||
 		Keyboard::getIns()->getPressingCount(KEY_INPUT_RETURN) == 2) {
 		if (Keyboard::getIns()->getPressingCount(KEY_INPUT_RIGHT) == 2) {
 			select = (select + 1) % 3;
-			player = -1;
 		}
 		if (Keyboard::getIns()->getPressingCount(KEY_INPUT_LEFT) == 2) {
 			select = (select + 2) % 3;
-			player = -1;
 		}
 		if (Keyboard::getIns()->getPressingCount(KEY_INPUT_RETURN) == 2) {
 			player = select;
-			//com = GetRand(2);//コンピュータの入力
+			com = GetRand(2);//コンピュータの入力
 			calcJanken();
 		}
 	}

@@ -4,8 +4,9 @@
 #include "Define.h"
 #include "Keyboard.h"
 
-TitleScene::TitleScene(IOnSceneChangeListener* impl) : AbstractScene(impl)
+TitleScene::TitleScene(IOnSceneChangeListener* impl) : AbstractScene(impl), counter(0) 
 {
+	PlaySoundFile("dat/title.mp3", DX_PLAYTYPE_LOOP);
 }
 
 void TitleScene::update()
@@ -15,11 +16,14 @@ void TitleScene::update()
 		implSceneChanged->onSceneChanged(eScene::Game, stackClear);
 		return;
 	}
+	counter++;
 }
 
 void TitleScene::draw() const
 {
-	DrawString(320, 100, "Ç∂Ç·ÇÒÇØÇÒÉQÅ[ÉÄ", GetColor(255, 255, 255));
+	DrawString(200, 100, "Ç∂Ç·ÇÒÇØÇÒÉQÅ[ÉÄ", GetColor(255, 255, 255));
 
-	DrawString(320, 300, "PRESS SPACE TO START", GetColor(255, 255, 255));
+	if (counter % 90 <= 45) {
+		DrawString(200, 300, "PRESS SPACE TO START", GetColor(255, 255, 255));
+	}
 }
