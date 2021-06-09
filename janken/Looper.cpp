@@ -4,6 +4,7 @@
 #include "Error.h"
 #include "Macro.h"
 #include "Keyboard.h"
+#include "Mouse.h"
 
 using namespace std;
 
@@ -15,6 +16,7 @@ Looper::Looper()
 bool Looper::loop() 
 {
 	Keyboard::getIns()->update();
+	Mouse::getIns()->update();
 	sceneStack.top()->update();		//スタックのトップのシーンを更新
 	sceneStack.top()->draw();		//スタックのトップのシーンを描画
 	fps.draw();

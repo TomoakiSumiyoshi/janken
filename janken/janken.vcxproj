@@ -153,6 +153,7 @@
     <ClCompile Include="Keyboard.cpp" />
     <ClCompile Include="Looper.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="Mouse.cpp" />
     <ClCompile Include="SystemMain.cpp" />
     <ClCompile Include="TitleScene.cpp" />
     <ClCompile Include="Janken.cpp" />
@@ -169,6 +170,7 @@
     <ClInclude Include="Keyboard.h" />
     <ClInclude Include="Looper.h" />
     <ClInclude Include="Macro.h" />
+    <ClInclude Include="Mouse.h" />
     <ClInclude Include="Singleton.h" />
     <ClInclude Include="SystemMain.h" />
     <ClInclude Include="Task.h" />

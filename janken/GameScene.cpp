@@ -13,7 +13,7 @@ GameScene::GameScene(IOnSceneChangeListener* impl) : AbstractScene(impl)
 void GameScene::update()
 {
 	janken->update();
-	if (Keyboard::getIns()->getPressingCount(KEY_INPUT_BACK) == 1) {
+	if (Keyboard::getIns()->getPressingCount(KEY_INPUT_BACK) == 2) {
 		const bool stackClear = true;
 		implSceneChanged->onSceneChanged(eScene::Title, stackClear);
 		return;

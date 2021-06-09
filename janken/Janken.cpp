@@ -1,6 +1,7 @@
 #include "DxLib.h"
 #include "Janken.h"
 #include "Keyboard.h"
+#include "Mouse.h"
 
 Janken::Janken()
 {
@@ -12,7 +13,8 @@ Janken::Janken()
 
 bool Janken::update()
 {
-	if (Keyboard::getIns()->getPressingCount(KEY_INPUT_ESCAPE) == 2)
+	if (Keyboard::getIns()->getPressingCount(KEY_INPUT_ESCAPE) == 2 ||
+		(state >= 1 && Mouse::getIns()->getPressingCount(Mouse::RIGHT_CLICK) == 2))
 		initialize();
 
 	inputJanken();
@@ -21,7 +23,7 @@ bool Janken::update()
 
 void Janken::draw() const
 {
-	DrawFormatString(150, 0, GetColor(255, 255, 255), "%s", "Enterキーで決定　Escキーでリセット");
+	DrawFormatString(150, 0, GetColor(255, 255, 255), "%s", "スペースキーで決定　Escキーでリセット");
 	if (state == -1)
 		DrawFormatString(150, 50, GetColor(255, 255, 255), "%s", "ジャンケン・・・");
 	else if (state == 0)
@@ -64,22 +66,45 @@ void Janken::inputJanken()
 {
 	if (!(state == -1 || state == 0))//まだ未入力か、あいこじゃないなら処理しない
 		return;
+
+	int mouseX = Mouse::getIns()->getX();
+	int mouseY = Mouse::getIns()->getY();
+
+	if (mouseY >= 280 && mouseY <= 430) {
+		if (mouseX >= 200 && mouseX <= 300) {
+			select = 0;
+		}
+		else if (mouseX >= 320 && mouseX <= 420) {
+			select = 1;
+		}
+		else if (mouseX >= 440 && mouseX <= 540) {
+			select = 2;
+		}
+		if (Mouse::getIns()->getPressingCount(Mouse::LEFT_CLICK) == 2 &&
+			(mouseX >= 200 && mouseX <= 540)) {
+			player = select;
+			com = GetRand(2);//コンピュータの入力
+			calcJanken();
+		}
+	}
+
 	//何か入力があれば
 	if (Keyboard::getIns()->getPressingCount(KEY_INPUT_RIGHT) == 2 ||
 		Keyboard::getIns()->getPressingCount(KEY_INPUT_LEFT) == 2 ||
-		Keyboard::getIns()->getPressingCount(KEY_INPUT_RETURN) == 2) {
+		Keyboard::getIns()->getPressingCount(KEY_INPUT_SPACE) == 2) {
 		if (Keyboard::getIns()->getPressingCount(KEY_INPUT_RIGHT) == 2) {
 			select = (select + 1) % 3;
 		}
 		if (Keyboard::getIns()->getPressingCount(KEY_INPUT_LEFT) == 2) {
 			select = (select + 2) % 3;
 		}
-		if (Keyboard::getIns()->getPressingCount(KEY_INPUT_RETURN) == 2) {
+		if (Keyboard::getIns()->getPressingCount(KEY_INPUT_SPACE) == 2) {
 			player = select;
 			com = GetRand(2);//コンピュータの入力
 			calcJanken();
 		}
 	}
+	
 }
 
 void Janken::calcJanken()
